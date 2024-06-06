@@ -1,5 +1,5 @@
 module.exports = {
-    MODE: "tdm",
-    HUNT: true,
-    TEAMS: 2
+  MODE: "tdm",
+  HUNT: true,
+  TEAMS: 2,
 };

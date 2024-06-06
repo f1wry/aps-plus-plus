@@ -1,3 +1,3 @@
 module.exports = {
-    TRAIN: true,
+  TRAIN: true,
 };

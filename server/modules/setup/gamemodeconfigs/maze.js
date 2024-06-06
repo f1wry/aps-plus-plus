@@ -1,4 +1,4 @@
 module.exports = {
-    MAZE: 30,
-    ROOM_SETUP: ['overlay_maze'],
+  MAZE: 30,
+  ROOM_SETUP: ["overlay_maze"],
 };

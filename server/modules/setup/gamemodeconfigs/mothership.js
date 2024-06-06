@@ -1,3 +1,3 @@
 module.exports = {
-    MOTHERSHIP_LOOP: true,
+  MOTHERSHIP_LOOP: true,
 };

@@ -1,4 +1,4 @@
 module.exports = {
-    TEAMS: 2,
-    TAG: true,
+  TEAMS: 2,
+  TAG: true,
 };

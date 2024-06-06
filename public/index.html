@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
@@ -8,7 +9,7 @@
     <meta property="og:image" content="./round.png">
     <meta property="og:image:width" content="54">
     <meta property="og:image:height" content="54">
-    <title>Open Source Arras</title>
+    <title>Tank Box</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
     <link rel="stylesheet" href="/main.css" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -16,6 +17,7 @@
     <meta name="msapplication-TileColor" content="#8abc3f">
     <meta name="theme-color" content="#8abc3f">
 </head>
+
 <body oncontextmenu="return false" id="mainBody">
     <div id="gameAreaWrapper">
         <canvas id="gameCanvas" tabindex="1"></canvas>
@@ -25,19 +27,19 @@
         <div id="startMenuWrapper">
             <div id="startMenu">
                 <div class="startMenuHolder">
-                  <center>This Arras.io Private Server runs on Open Source Arras.<br>For more info, visit <a href="https://github.com/Taureon/aps-plus-plus">the GitHub Repository</a>.<br><br>Not an official Arras.io project. We are not associated with Arras.io or Momentum Studios.</center>
+                    <center>This Arras.io Private Server runs on Open Source Arras.<br>For more info, visit <a href="https://github.com/Taureon/aps-plus-plus">the GitHub Repository</a>.<br><br>Not an official Arras.io project. We are not associated with Arras.io or Momentum Studios.</center>
                 </div>
                 <div class="startMenuHolder">
                     <div class="sliderHolder">
                         <div class="slider" id="startMenuSlidingContent">
                             <center><img width=112 height=112 src="/round.png" /></center>
-                            <h1 id="gameName">Open Source Arras<h1>
-                            <div id="serverName">
-                                <h4 class="nopadding">Connecting...</h4>
-                            </div>
-                            <table id="serverSelector" style="display:none;"></table>
-                            <input type="text" autofocus tabindex="1" spellcheck="false" placeholder="This is the tale of" id="playerNameInput" maxlength="24"/>
-                            <input type="text" class="conceal" tabindex="3" placeholder="Insert token here" id="playerKeyInput" maxlength="64" />
+                            <h1 id="gameName">Tank Box<h1>
+                                    <div id="serverName">
+                                        <h4 class="nopadding">Connecting...</h4>
+                                    </div>
+                                    <table id="serverSelector" style="display:none;"></table>
+                                    <input type="text" autofocus tabindex="1" spellcheck="false" placeholder="This is the tale of" id="playerNameInput" maxlength="24" />
+                                    <input type="text" class="conceal" tabindex="3" placeholder="Insert token here" id="playerKeyInput" maxlength="64" />
                         </div>
                         <div class="slider" id="startMenuSlidingTrigger">
                             <h3 class="nopadding">view options ▸</h3>
@@ -46,13 +48,33 @@
                             <br>
                             <options_header>Advanced Controls:</options_header><br>
                             <table>
-                                <tr> <td><b>E</b> - auto-fire</td>     <td><b>C</b> - auto-spin</td> </tr>
-                                <tr> <td><b>R</b> - disable AI</td>    <td><b>N</b> - level up</td> </tr>
-                                <tr> <td><b>V</b> - reverse tank</td>  <td><b>F</b> - auto-alt</td> </tr>
-                                <tr> <td><b>B</b> - reverse mouse</td> <td><b>O</b> - self-destruct</td> </tr>
-                                <tr> <td><b>T</b> - show tank tree</td><td><b>M</b> - maximize stat</td> </tr>
-                                <tr> <td><b>X</b> - spin lock</td>     <td><b>P</b> - developer tank*</td> </tr>
-                                <tfoot> <td><b>*</b> = requires valid token</td> </tfoot>
+                                <tr>
+                                    <td><b>E</b> - auto-fire</td>
+                                    <td><b>C</b> - auto-spin</td>
+                                </tr>
+                                <tr>
+                                    <td><b>R</b> - disable AI</td>
+                                    <td><b>N</b> - level up</td>
+                                </tr>
+                                <tr>
+                                    <td><b>V</b> - reverse tank</td>
+                                    <td><b>F</b> - auto-alt</td>
+                                </tr>
+                                <tr>
+                                    <td><b>B</b> - reverse mouse</td>
+                                    <td><b>O</b> - self-destruct</td>
+                                </tr>
+                                <tr>
+                                    <td><b>T</b> - show tank tree</td>
+                                    <td><b>M</b> - maximize stat</td>
+                                </tr>
+                                <tr>
+                                    <td><b>X</b> - spin lock</td>
+                                    <td><b>P</b> - developer tank*</td>
+                                </tr>
+                                <tfoot>
+                                    <td><b>*</b> = requires valid token</td>
+                                </tfoot>
                             </table>
                             <options_header>Options:</options_header>
                             <select id="optColors" tabindex="-1">
@@ -88,20 +110,36 @@
                             <input type="hidden" placeholder="Insert Custom Theme" id="optCustom" />
                             <table>
                                 <tr>
-                                    <td><div><label><input id="optScreenshotMode"   tabindex="-1" class="checkbox" type="checkbox"> Screenshot Mode</label></div></td>
-                                    <td><div><label><input id="optNoPointy"         tabindex="-1" class="checkbox" type="checkbox"> Classic Traps</label></div></td>
+                                    <td>
+                                        <div><label><input id="optScreenshotMode" tabindex="-1" class="checkbox" type="checkbox"> Screenshot Mode</label></div>
+                                    </td>
+                                    <td>
+                                        <div><label><input id="optNoPointy" tabindex="-1" class="checkbox" type="checkbox"> Classic Traps</label></div>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><div><label><input id="optFancy"            tabindex="-1" class="checkbox" type="checkbox"> Low Graphics</label></div></td>
-                                    <td><div><label><input id="optPredictive"       tabindex="-1" class="checkbox" type="checkbox"> Disable Hyperactivity</label></div></td>
+                                    <td>
+                                        <div><label><input id="optFancy" tabindex="-1" class="checkbox" type="checkbox"> Low Graphics</label></div>
+                                    </td>
+                                    <td>
+                                        <div><label><input id="optPredictive" tabindex="-1" class="checkbox" type="checkbox"> Disable Hyperactivity</label></div>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><div><label><input id="coloredHealthbars"   tabindex="-1" class="checkbox" type="checkbox"> Colored Health Bars</label></div></td>
-                                    <td><div><label><input id="seperatedHealthbars" tabindex="-1" class="checkbox" type="checkbox"> Seperated Health Bars</label></div></td>
+                                    <td>
+                                        <div><label><input id="coloredHealthbars" tabindex="-1" class="checkbox" type="checkbox"> Colored Health Bars</label></div>
+                                    </td>
+                                    <td>
+                                        <div><label><input id="seperatedHealthbars" tabindex="-1" class="checkbox" type="checkbox"> Seperated Health Bars</label></div>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><div><label><input id="autoLevelUp"         tabindex="-1" class="checkbox" type="checkbox"> Auto-Level Up</label></div></td>
-                                    <td><div><label><input id="centerTank"          tabindex="-1" class="checkbox" type="checkbox"> Center Camera</label></div></td>
+                                    <td>
+                                        <div><label><input id="autoLevelUp" tabindex="-1" class="checkbox" type="checkbox"> Auto-Level Up</label></div>
+                                    </td>
+                                    <td>
+                                        <div><label><input id="centerTank" tabindex="-1" class="checkbox" type="checkbox"> Center Camera</label></div>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -120,12 +158,12 @@
                         <a class="link original"  href="https://arras.io/">Arras.io Game</a>
                         <a class="link discord"   href="https://discord.gg/arras">Arras.io Discord</a>
                         -->
-                        <a class="link discord"   href="https://discord.gg/kvCAZfUCjy">Discord Server</a>
-                        <a class="link developer" href="https://github.com/Taureon/">Main Developer</a>
-                        <a class="link developer" href="https://github.com/Zephiii/">Original Creator</a>
-                        <a class="link github"    href="https://github.com/Taureon/aps-plus-plus">Source Code</a>
-                        <a class="link github"    href="https://github.com/Taureon/aps-plus-plus/issues/new">Report Bugs</a>
-                        <a class="link github"    href="https://github.com/Taureon/aps-plus-plus/discussions/new?category=suggestions">Suggest Features</a>
+                        <a class="link discord" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Discord Server</a>
+                        <a class="link developer" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Main Developer</a>
+                        <a class="link developer" href="https://github.com/Taureon/">Original Creator</a>
+                        <a class="link github" href="https://github.com/f1wry/aps-plus-plus">Source Code</a>
+                        <a class="link github" href="https://github.com/f1wry/aps-plus-plus/issues/new">Report Bugs</a>
+                        <a class="link github" href="https://github.com/f1wry/aps-plus-plus/discussions/new?category=suggestions">Suggest Features</a>
                     </div>
                 </div>
             </div>
@@ -143,7 +181,7 @@
     <script type="module" src="./lib/socketInit.js"></script>
     <script type="module" src="./app.js"></script>
     <script>
-        $("#optColors").change( function () {
+        $("#optColors").change(function() {
             if ($(this).val() == "custom") document.getElementById("optCustom").type = "text";
             else document.getElementById("optCustom").type = "hidden";
         });
@@ -153,13 +191,19 @@
             if ($("#optColors").val() == "custom") document.getElementById("optCustom").type = "text";
             if (clicked) {
                 $(this).html('<h3 class="nopadding">close options ▾</h3>');
-                $(".slider").css({ "top": "-305px" })
+                $(".slider").css({
+                    "top": "-305px"
+                })
             } else {
                 $(this).html('<h3 class="nopadding">view options ▸</h3>');
-                $(".slider").css({ "top": 0 });
+                $(".slider").css({
+                    "top": 0
+                });
             }
         });
-        if (navigator.serviceWorker) navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then(registration => console.log('Service Worker Registered'));
+        if (navigator.serviceWorker) navigator.serviceWorker.register('/service-worker.js', {
+            scope: '/'
+        }).then(registration => console.log('Service Worker Registered'));
     </script>
 </body>
 

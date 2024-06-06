@@ -1,4 +1,4 @@
 module.exports = {
-    DOMINATOR_LOOP: true,
-    ROOM_SETUP: ['overlay_domination']
+  DOMINATOR_LOOP: true,
+  ROOM_SETUP: ["overlay_domination"],
 };

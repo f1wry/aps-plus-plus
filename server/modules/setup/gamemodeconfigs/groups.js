@@ -1,6 +1,6 @@
 // Amount of players per group
-let groupSize = (Math.random() * 3 | 0) + 2;
+let groupSize = ((Math.random() * 3) | 0) + 2;
 
 module.exports = {
-    GROUPS: groupSize
+  GROUPS: groupSize,
 };

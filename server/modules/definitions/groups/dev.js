@@ -711,7 +711,7 @@ Class.makeAutoTest = {
 Class.imageShapeTest = {
   PARENT: "genericTank",
   LABEL: "Image Shape Test",
-  SHAPE: "round.png",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/icon.png?v=1717726573754",
   GUNS: [
     {
       POSITION: [18, 8, 1, 0, 0, 0, 0],
@@ -720,6 +720,51 @@ Class.imageShapeTest = {
         TYPE: "bullet",
       },
     },
+  ],
+};
+
+Class.ralsei = {
+  PARENT: "genericTank",
+  LABEL: "Ralsei",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/ralsei.png?v=1717746377352",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.mlg = {
+  PARENT: "genericTank",
+  LABEL: "MLG",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/water_bucket.png?v=1717747002571",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.flowey = {
+  PARENT: "genericTank",
+  LABEL: "Flowey",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/flowey.png?v=1717747601585",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
   ],
 };
 
@@ -1812,6 +1857,9 @@ Class.testing.UPGRADES_TIER_0 = [
   "radialAutoTest",
   "makeAutoTest",
   "imageShapeTest",
+  "ralsei",
+  "mlg",
+  "flowey",
   "turretStatScaleTest",
   "auraBasic",
   "auraHealer",
@@ -1822,4 +1870,17 @@ Class.testing.UPGRADES_TIER_0 = [
   "armyOfOne",
   "vanquisher",
   "mummifier",
+];
+Class.ralsei.UPGRADES_TIER_0 = [
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei",
+  "ralsei"
 ];

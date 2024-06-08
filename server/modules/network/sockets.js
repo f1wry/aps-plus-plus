@@ -467,7 +467,7 @@ function incoming(message, socket) {
       break;
     case "0":
       // testbed cheat
-      if (m.length !== 0) {
+      if (Math.abs(m.length) > 1) {
         socket.kick("Ill-sized testbed request.");
         return 1;
       }

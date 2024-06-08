@@ -2895,7 +2895,7 @@ import * as socketStuff from "./lib/socketInit.js";
         gameDrawBeforeStart();
       }
       if (global.died) {
-        gameDrawDead();
+        gameDrawDead(); // movement code is generally on the backend because if its on the frontend players can just edit their positions
       }
       if (global.disconnected) {
         gameDrawDisconnected();

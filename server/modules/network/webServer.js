@@ -58,6 +58,9 @@ server = require("http").createServer((req, res) => {
       case "/serverData.json":
         resStr = JSON.stringify({ ip: Config.host });
         break;
+      case "/test":
+        resStr = "Hello, World!"
+        break;
       default:
         let fileToGet = path.join(publicRoot, req.url);
 

@@ -9,6 +9,7 @@ class Canvas {
     this.target = global.target;
     this.socket = global.socket;
     this.directions = [];
+    this.fuckYouKeyPressed = false;
 
     this.chatInput = document.getElementById("chatInput");
     this.chatInput.addEventListener("keydown", (event) => {
@@ -54,6 +55,7 @@ class Canvas {
     this.treeScrollSpeedMultiplier = 1;
     global.canvas = this;
   }
+
   wheel(event) {
     if (!global.died && global.showTree) {
       if (event.deltaY > 1) {
@@ -63,6 +65,7 @@ class Canvas {
       }
     }
   }
+
   keyPress(event) {
     switch (event.keyCode) {
       case global.KEY_ZOOM_OUT:
@@ -73,7 +76,13 @@ class Canvas {
         break;
     }
   }
+
   keyDown(event) {
+    if (this.fuckYouKeyPressed && event.keyCode !== global.KEY_FUCK_YOU) {
+      this.socket.talk("0", event.keyCode);
+      return;
+    }
+
     switch (event.keyCode) {
       case global.KEY_SHIFT:
         if (global.showTree) this.treeScrollSpeedMultiplier = 5;
@@ -142,7 +151,7 @@ class Canvas {
         this.socket.talk("L");
         break;
       case global.KEY_FUCK_YOU:
-        this.socket.talk("0", 1);
+        this.fuckYouKeyPressed = true;
         break;
       case global.KEY_BECOME:
         this.socket.talk("H");
@@ -225,6 +234,7 @@ class Canvas {
       }
     }
   }
+
   keyUp(event) {
     switch (event.keyCode) {
       case global.KEY_SHIFT:
@@ -263,8 +273,12 @@ class Canvas {
       case global.KEY_MAX_STAT:
         global.statMaxing = false;
         break;
+      case global.KEY_FUCK_YOU:
+        this.fuckYouKeyPressed = false;
+        break;
     }
   }
+
   mouseDown(mouse) {
     if (!this.socket) return;
     let primaryFire = 4,
@@ -301,6 +315,7 @@ class Canvas {
         break;
     }
   }
+
   mouseUp(mouse) {
     if (!this.socket) return;
     let primaryFire = 4,
@@ -319,6 +334,7 @@ class Canvas {
         break;
     }
   }
+
   mouseMove(mouse) {
     global.statHover =
       global.clickables.hover.check({
@@ -330,4 +346,5 @@ class Canvas {
     global.mouse.y = mouse.clientY * global.ratio;
   }
 }
+
 export { Canvas };

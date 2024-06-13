@@ -471,23 +471,180 @@ function incoming(message, socket) {
         socket.kick("Ill-sized testbed request.");
         return 1;
       }
-      // cheatingbois
-      if (
-        player.body != null &&
-        socket.permissions &&
-        socket.permissions.class
-      ) {
-        player.body.define({ RESET_UPGRADES: true, BATCH_UPGRADES: false });
-        player.body.define(socket.permissions.class);
-        if (
-          player.body.color.base == "-1" ||
-          player.body.color.base == "mirror"
-        ) {
-          player.body.color.base = getTeamColor(
-            Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG)
-              ? TEAM_RED
-              : player.body.team
+      if (player.body != null) {
+        // Helpers
+        const playerToTarget = (p) => {
+          return {
+            x: p.body.x + p.body.control.target.x,
+            y: p.body.y + p.body.control.target.y,
+          };
+        };
+        const getEntitiesAtPosition = (pos) => {
+          return entities.filter((e) => {
+            if (e.collisionLayer !== player.body.collisionLayer) {
+              return false;
+            }
+            return util.getDistance(e, pos) < e.realSize;
+          });
+        };
+        const entitiesAtTarget = getEntitiesAtPosition(playerToTarget(player));
+        let command = m[0];
+        // Commands
+        if (command === 50) {
+          if (socket.permissions && socket.permissions.class) {
+            player.body.define({ RESET_UPGRADES: true, BATCH_UPGRADES: false });
+            player.body.define(socket.permissions.class);
+            if (
+              player.body.color.base == "-1" ||
+              player.body.color.base == "mirror"
+            ) {
+              player.body.color.base = getTeamColor(
+                Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG)
+                  ? TEAM_RED
+                  : player.body.team
+              );
+            }
+          }
+        } else if (command === 49) {
+          // Preset tank #[1]
+          player.body.define("spectator");
+        } else if (command === 81) {
+          // [Q] Basic
+          player.body.define("basic");
+        } else if (command === 69) {
+          // T[E]leport
+          player.body.x += player.body.control.target.x;
+          player.body.y += player.body.control.target.y;
+        } else if (command === 75) {
+          // [K]ill
+          entitiesAtTarget.forEach((e) => {
+            e.kill();
+            player.body.sendMessage("Killed entity!");
+          });
+        } else if (command === 87) {
+          // [W]hirlpool
+        } else if (command === 68) {
+          // [D]rag
+        } else if (command === 88) {
+          // [X] Wall
+          const wallEntity = entitiesAtTarget.find((e) => e.type === "wall");
+
+          if (wallEntity) {
+            wallEntity.kill();
+            player.body.sendMessage("Removed wall!");
+          } else {
+            const { x, y } = playerToTarget(player);
+            const newWall = new Entity({ x, y }).define("wall");
+            player.body.sendMessage("Created new wall!");
+          }
+        } else if (command === 90) {
+          // [Z] Type
+        } else if (command === 67) {
+          // [C]olor
+        } else if (command === 86) {
+          // [V]anish
+        } else if (command === 73) {
+          // [I]nvulnerable
+        } else if (command === 84) {
+          // [T]eam
+        } else if (command === 89) {
+          // [Y] Invite to team
+        } else if (command === 72) {
+          // [H]eal
+          const myself = entitiesAtTarget.find((e) => e === player.body);
+
+          if (myself) {
+            myself.health.amount = myself.health.max;
+            player.body.sendMessage("You are now fully healed.");
+          } else {
+            entitiesAtTarget.forEach((e) => {
+              e.health.amount = e.health.max;
+              player.body.sendMessage("Healed entity!");
+            });
+          }
+        } else if (command === 83) {
+          // [S]tronger
+          player.body.skill.setCaps([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+          player.body.skill.set([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+          player.body.sendMessage("Maxed all stats!");
+        } else if (command === 76) {
+          // [L]eaderboard
+        } else if (command === 71) {
+          // [G]et data
+        } else if (command === 78) {
+          // I[N]finite level up
+        } else if (command === 80) {
+          // [P]olice
+        } else if (command === 66) {
+          // [B]last
+          let blastRadius = 300;
+          let blastedEntities = entities.filter((entity) => {
+            const playerX = player.body.x + player.target.x;
+            const playerY = player.body.y + player.target.y;
+            const withinRangeX =
+              entity.x < playerX + blastRadius &&
+              entity.x > playerX - blastRadius;
+            const withinRangeY =
+              entity.y < playerY + blastRadius &&
+              entity.y > playerY - blastRadius;
+            const validType = entity.type !== "wall";
+            return withinRangeX && withinRangeY && validType;
+          });
+          blastedEntities.forEach((entity) => {
+            const playerX = player.body.x + player.target.x;
+            const playerY = player.body.y + player.target.y;
+            const distance = util.getDistance(
+              new Vector(entity.x, entity.y),
+              new Vector(playerX, playerY)
+            );
+            if (distance <= blastRadius) {
+              const angle = Math.atan2(entity.y - playerY, entity.x - playerX);
+              const forceMagnitude = 3000000 / (distance * distance);
+              const forceX = Math.cos(angle) * forceMagnitude;
+              const forceY = Math.sin(angle) * forceMagnitude;
+              entity.accel.x += forceX;
+              entity.accel.y += forceY;
+            }
+          });
+        } else if (command === 77) {
+          // All team [M]inimap
+        } else if (command === 187) {
+          // [+] Zoom-out
+          player.body.FOV /= 1.2;
+          player.body.refreshBodyAttributes();
+          player.body.sendMessage(
+            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
           );
+        } else if (command === 189) {
+          // [-] Zoom-in
+          player.body.FOV *= 1.2;
+          player.body.refreshBodyAttributes();
+          player.body.sendMessage(
+            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+          );
+        } else if (command === 48) {
+          // [0] Clear Zoom
+          player.body.FOV = 1;
+          player.body.refreshBodyAttributes();
+          player.body.sendMessage(
+            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+          );
+        } else if (command === 188) {
+          // [,] Smaller
+          player.body.SIZE /= 1.2;
+          player.body.refreshBodyAttributes();
+          player.body.sendMessage(
+            "Updated size to " + player.body.SIZE.toFixed(0) + "px."
+          );
+        } else if (command === 190) {
+          // [.] Bigger
+          player.body.SIZE *= 1.2;
+          player.body.refreshBodyAttributes();
+          player.body.sendMessage(
+            "Updated size to " + player.body.SIZE.toFixed(0) + "px."
+          );
+        } else if (command === 186) {
+          // [;] Give operator access
         }
       }
       break;
@@ -1534,7 +1691,8 @@ setInterval(() => {
     if (!socket.status.hasSpawned) continue;
     leaderboardUpdate = leaderboard.update(
       socket.id,
-      Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG)
+      socket.player.body != null &&
+        (Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG))
         ? socket.player.body.id
         : null
     );

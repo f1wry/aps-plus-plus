@@ -2262,7 +2262,7 @@ import * as socketStuff from "./lib/socketInit.js";
     // Text
     if (global.showDebug) {
       drawText(
-        "Open Source Arras",
+        "Tank Box",
         x + len,
         y - 50 - 5 * 14 - 2,
         15,
@@ -2314,7 +2314,7 @@ import * as socketStuff from "./lib/socketInit.js";
       );
     } else {
       drawText(
-        "Open Source Arras",
+        "Tank Box",
         x + len,
         y - 50 - 2 * 14 - 2,
         15,
@@ -2895,7 +2895,7 @@ import * as socketStuff from "./lib/socketInit.js";
         gameDrawBeforeStart();
       }
       if (global.died) {
-        gameDrawDead(); // movement code is generally on the backend because if its on the frontend players can just edit their positions
+        gameDrawDead();
       }
       if (global.disconnected) {
         gameDrawDisconnected();

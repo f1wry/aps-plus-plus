@@ -39,7 +39,7 @@ module.exports = {
 
   // How long a entity chat message lasts in milliseconds.
   // Includes the fade-out period.
-  CHAT_MESSAGE_DURATION: 30_000,
+  CHAT_MESSAGE_DURATION: 10_000,
 
   // If you don't want your players to color their messages.
   // They get sanitized after addons interpret them, but before they're added to the chat message dictionary.
@@ -52,7 +52,7 @@ module.exports = {
   WINDOW_NAME: "OSA Game Server Instance",
 
   // Allows you to type and run javascript code in the terminal.
-  REPL_WINDOW: true,
+  REPL_WINDOW: true, // i set this to true because i thought it enabled terminal lel
 
   // Welcome message once a player spawns.
   WELCOME_MESSAGE:

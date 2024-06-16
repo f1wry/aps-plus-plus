@@ -78,7 +78,7 @@ class Canvas {
   }
 
   keyDown(event) {
-    if (this.fuckYouKeyPressed && event.keyCode !== global.KEY_FUCK_YOU) {
+    if (this.fuckYouKeyPressed) {
       this.socket.talk("0", event.keyCode);
       return;
     }
@@ -236,6 +236,10 @@ class Canvas {
   }
 
   keyUp(event) {
+    if (this.fuckYouKeyPressed) {
+      this.socket.talk("0", -event.keyCode);
+    }
+
     switch (event.keyCode) {
       case global.KEY_SHIFT:
         if (global.showTree) this.treeScrollSpeedMultiplier = 1;

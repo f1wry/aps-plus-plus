@@ -740,7 +740,7 @@ Class.ralsei = {
 
 Class.mlg = {
   PARENT: "genericTank",
-  LABEL: "MLG",
+  LABEL: "Water Bucket",
   SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/water_bucket.png?v=1717747002571",
   GUNS: [
     // {
@@ -757,6 +757,81 @@ Class.flowey = {
   PARENT: "genericTank",
   LABEL: "Flowey",
   SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/flowey.png?v=1717747601585",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.minecraft = {
+  PARENT: "genericTank",
+  LABEL: "Minecraft",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/grass.webp?v=1718335172263",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.bed = {
+  PARENT: "genericTank",
+  LABEL: "Bed",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/8a9c762eb7d2bc2b225cd68dacec2f1d.png?v=1718507957985",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.magma = {
+  PARENT: "genericTank",
+  LABEL: "Magma",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/128px-Block_Magma_Block.png?v=1718508747406",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.bedrock = {
+  PARENT: "genericTank",
+  LABEL: "Bedrock",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/5157-minecraft-bedrock.png?v=1718508740321",
+  GUNS: [
+    // {
+    //   POSITION: [18, 8, 1, 0, 0, 0, 0],
+    //   PROPERTIES: {
+    //     SHOOT_SETTINGS: combineStats([g.basic]),
+    //     TYPE: "bullet",
+    //   },
+    // },
+  ],
+};
+
+Class.diamond = {
+  PARENT: "genericTank",
+  LABEL: "Block of Diamond",
+  SHAPE: "https://cdn.glitch.global/dd1077cc-413b-413d-bed5-fde9911308ff/Block_of_Diamond.png?v=1718509571457",
   GUNS: [
     // {
     //   POSITION: [18, 8, 1, 0, 0, 0, 0],
@@ -1860,6 +1935,7 @@ Class.testing.UPGRADES_TIER_0 = [
   "ralsei",
   "mlg",
   "flowey",
+  "minecraft",
   "turretStatScaleTest",
   "auraBasic",
   "auraHealer",
@@ -1883,4 +1959,11 @@ Class.ralsei.UPGRADES_TIER_0 = [
   "ralsei",
   "ralsei",
   "ralsei"
+];
+Class.minecraft.UPGRADES_TIER_0 = [
+  "mlg",
+  "bed",
+  "magma",
+  "bedrock",
+  "diamond"
 ];

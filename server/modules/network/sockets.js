@@ -155,6 +155,7 @@ function incoming(message, socket) {
       }
       socket.verified = true;
       util.log("Clients: " + clients.length);
+      socket.operator = false;
       break;
     case "s":
       // spawn request
@@ -471,180 +472,252 @@ function incoming(message, socket) {
         socket.kick("Ill-sized testbed request.");
         return 1;
       }
-      if (player.body != null) {
-        // Helpers
-        const playerToTarget = (p) => {
-          return {
-            x: p.body.x + p.body.control.target.x,
-            y: p.body.y + p.body.control.target.y,
-          };
-        };
-        const getEntitiesAtPosition = (pos) => {
-          return entities.filter((e) => {
-            if (e.collisionLayer !== player.body.collisionLayer) {
-              return false;
-            }
-            return util.getDistance(e, pos) < e.realSize;
-          });
-        };
-        const entitiesAtTarget = getEntitiesAtPosition(playerToTarget(player));
+      if (player.body != null && socket.operator) {
         let command = m[0];
-        // Commands
-        if (command === 50) {
-          if (socket.permissions && socket.permissions.class) {
-            player.body.define({ RESET_UPGRADES: true, BATCH_UPGRADES: false });
-            player.body.define(socket.permissions.class);
-            if (
-              player.body.color.base == "-1" ||
-              player.body.color.base == "mirror"
-            ) {
-              player.body.color.base = getTeamColor(
-                Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG)
-                  ? TEAM_RED
-                  : player.body.team
-              );
+        const entitiesAtTarget = util.getAtPosition(
+          entities,
+          util.playerToTarget(player)
+        );
+        const clientsAtTarget = util.getAtPosition(
+          clients,
+          util.playerToTarget(player)
+        );
+        switch (command) {
+          case 191:
+            // [/] Help menu
+            break;
+          case 50:
+            // [2] Custom tank
+            if (socket.permissions && socket.permissions.class) {
+              player.body.define({
+                RESET_UPGRADES: true,
+                BATCH_UPGRADES: false,
+              });
+              player.body.define(socket.permissions.class);
+              if (
+                player.body.color.base === "-1" ||
+                player.body.color.base === "mirror"
+              ) {
+                player.body.color.base = getTeamColor(
+                  Config.GROUPS || (Config.MODE === "ffa" && !Config.TAG)
+                    ? TEAM_RED
+                    : player.body.team
+                );
+              }
             }
-          }
-        } else if (command === 49) {
-          // Preset tank #[1]
-          player.body.define("spectator");
-        } else if (command === 81) {
-          // [Q] Basic
-          player.body.define("basic");
-        } else if (command === 69) {
-          // T[E]leport
-          player.body.x += player.body.control.target.x;
-          player.body.y += player.body.control.target.y;
-        } else if (command === 75) {
-          // [K]ill
-          entitiesAtTarget.forEach((e) => {
-            e.kill();
-            player.body.sendMessage("Killed entity!");
-          });
-        } else if (command === 87) {
-          // [W]hirlpool
-        } else if (command === 68) {
-          // [D]rag
-        } else if (command === 88) {
-          // [X] Wall
-          const wallEntity = entitiesAtTarget.find((e) => e.type === "wall");
-
-          if (wallEntity) {
-            wallEntity.kill();
-            player.body.sendMessage("Removed wall!");
-          } else {
-            const { x, y } = playerToTarget(player);
-            const newWall = new Entity({ x, y }).define("wall");
-            player.body.sendMessage("Created new wall!");
-          }
-        } else if (command === 90) {
-          // [Z] Type
-        } else if (command === 67) {
-          // [C]olor
-        } else if (command === 86) {
-          // [V]anish
-        } else if (command === 73) {
-          // [I]nvulnerable
-        } else if (command === 84) {
-          // [T]eam
-        } else if (command === 89) {
-          // [Y] Invite to team
-        } else if (command === 72) {
-          // [H]eal
-          const myself = entitiesAtTarget.find((e) => e === player.body);
-
-          if (myself) {
-            myself.health.amount = myself.health.max;
-            player.body.sendMessage("You are now fully healed.");
-          } else {
+            break;
+          case 49:
+            // Preset tank #[1]
+            player.body.define("spectator");
+            break;
+          case 81:
+            // [Q] Basic
+            player.body.define("basic");
+            break;
+          case 69:
+            // T[E]leport
+            player.body.x = util.playerToTarget(player).x;
+            player.body.y = util.playerToTarget(player).y;
+            break;
+          case 75:
+            // [K]ill
             entitiesAtTarget.forEach((e) => {
-              e.health.amount = e.health.max;
-              player.body.sendMessage("Healed entity!");
+              e.kill();
+              player.body.sendMessage("Killed entity!");
             });
-          }
-        } else if (command === 83) {
-          // [S]tronger
-          player.body.skill.setCaps([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
-          player.body.skill.set([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
-          player.body.sendMessage("Maxed all stats!");
-        } else if (command === 76) {
-          // [L]eaderboard
-        } else if (command === 71) {
-          // [G]et data
-        } else if (command === 78) {
-          // I[N]finite level up
-        } else if (command === 80) {
-          // [P]olice
-        } else if (command === 66) {
-          // [B]last
-          let blastRadius = 300;
-          let blastedEntities = entities.filter((entity) => {
-            const playerX = player.body.x + player.target.x;
-            const playerY = player.body.y + player.target.y;
-            const withinRangeX =
-              entity.x < playerX + blastRadius &&
-              entity.x > playerX - blastRadius;
-            const withinRangeY =
-              entity.y < playerY + blastRadius &&
-              entity.y > playerY - blastRadius;
-            const validType = entity.type !== "wall";
-            return withinRangeX && withinRangeY && validType;
-          });
-          blastedEntities.forEach((entity) => {
-            const playerX = player.body.x + player.target.x;
-            const playerY = player.body.y + player.target.y;
-            const distance = util.getDistance(
-              new Vector(entity.x, entity.y),
-              new Vector(playerX, playerY)
-            );
-            if (distance <= blastRadius) {
-              const angle = Math.atan2(entity.y - playerY, entity.x - playerX);
-              const forceMagnitude = 3000000 / (distance * distance);
-              const forceX = Math.cos(angle) * forceMagnitude;
-              const forceY = Math.sin(angle) * forceMagnitude;
-              entity.accel.x += forceX;
-              entity.accel.y += forceY;
+            break;
+          case 87:
+            // [W]hirlpool
+            if (player.body.dragging) {
+              player.body.dragged.forEach((e) => {
+                e.x = util.playerToTarget(player).x;
+                e.y = util.playerToTarget(player).y;
+              });
+            } else {
+              entities.forEach((e) => {
+                player.body.wpCurrDist = util.getDistance(e, player);
+                if (player.body.wpCurrDist < player.body.wpMinDist) {
+                  player.body.dragged = [e];
+                  player.body.wpMinDist = player.body.wpCurrDist;
+                }
+              });
+              player.body.dragging = true;
             }
-          });
-        } else if (command === 77) {
-          // All team [M]inimap
-        } else if (command === 187) {
-          // [+] Zoom-out
-          player.body.FOV /= 1.2;
-          player.body.refreshBodyAttributes();
-          player.body.sendMessage(
-            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
-          );
-        } else if (command === 189) {
-          // [-] Zoom-in
-          player.body.FOV *= 1.2;
-          player.body.refreshBodyAttributes();
-          player.body.sendMessage(
-            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
-          );
-        } else if (command === 48) {
-          // [0] Clear Zoom
-          player.body.FOV = 1;
-          player.body.refreshBodyAttributes();
-          player.body.sendMessage(
-            "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
-          );
-        } else if (command === 188) {
-          // [,] Smaller
-          player.body.SIZE /= 1.2;
-          player.body.refreshBodyAttributes();
-          player.body.sendMessage(
-            "Updated size to " + player.body.SIZE.toFixed(0) + "px."
-          );
-        } else if (command === 190) {
-          // [.] Bigger
-          player.body.SIZE *= 1.2;
-          player.body.refreshBodyAttributes();
-          player.body.sendMessage(
-            "Updated size to " + player.body.SIZE.toFixed(0) + "px."
-          );
-        } else if (command === 186) {
-          // [;] Give operator access
+            break;
+          case -87:
+            // -[W]hirlpool
+            player.body.dragging = false;
+            player.body.dragged = [];
+            break;
+          case 68:
+            // [D]rag
+            if (player.body.dragging) {
+              player.body.dragged.forEach((e) => {
+                e.x = util.playerToTarget(player).x;
+                e.y = util.playerToTarget(player).y;
+              });
+            } else {
+              player.body.dragged = entitiesAtTarget;
+              player.body.dragging = true;
+            }
+            break;
+          case -68:
+            // -[D]rag
+            player.body.dragging = false;
+            player.body.dragged = [];
+            break;
+          case 88:
+            // [X] Wall
+            const wallEntity = entitiesAtTarget.find((e) => e.type === "wall");
+            if (wallEntity) {
+              wallEntity.kill();
+              player.body.sendMessage("Removed wall!");
+            } else {
+              const { x, y } = util.playerToTarget(player);
+              new Entity({ x, y }).define("wall");
+              player.body.sendMessage("Created new wall!");
+            }
+            break;
+          case 90:
+            // [Z] Type
+            break;
+          case 67:
+            // [C]olor
+            break;
+          case 86:
+            // [V]anish
+            break;
+          case 73:
+            // [I]nvulnerable
+            player.body.invuln = !player.body.invuln;
+            break;
+          case 84:
+            // [T]eam
+            break;
+          case 89:
+            // [Y] Invite to team
+            break;
+          case 72:
+            // [H]eal
+            const myself = entitiesAtTarget.find((e) => e === player.body);
+            if (myself) {
+              myself.health.amount = myself.health.max;
+              player.body.sendMessage("You are now fully healed.");
+            } else {
+              entitiesAtTarget.forEach((e) => {
+                e.health.amount = e.health.max;
+                player.body.sendMessage("Healed entity!");
+              });
+            }
+            break;
+          case 83:
+            // [S]tronger
+            player.body.skill.setCaps([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+            player.body.skill.set([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+            player.body.sendMessage("Maxed all stats!");
+            break;
+          case 76:
+            // [L]eaderboard
+            break;
+          case 71:
+            // [G]et data
+            break;
+          case 78:
+            // I[N]finite level up
+            break;
+          case 80:
+            // [P]olice
+            break;
+          case 66:
+            // [B]last
+            const blastRadius = 300;
+            const playerX = player.body.x + player.target.x;
+            const playerY = player.body.y + player.target.y;
+            const blastedEntities /* great naming */ = entities.filter(
+              (e) =>
+                e.type !== "wall" &&
+                Math.abs(e.x - playerX) < blastRadius &&
+                Math.abs(e.y - playerY) < blastRadius
+            );
+            blastedEntities.forEach((e) => {
+              const distance = util.getDistance(
+                new Vector(e.x, e.y),
+                new Vector(playerX, playerY)
+              );
+              if (distance <= blastRadius) {
+                const angle = Math.atan2(e.y - playerY, e.x - playerX);
+                const forceMagnitude = 3000000 / (distance * distance);
+                e.accel.x += Math.cos(angle) * forceMagnitude;
+                e.accel.y += Math.sin(angle) * forceMagnitude;
+              }
+            });
+            break;
+          case 77:
+            // All team [M]inimap
+            break;
+          case 187:
+            // [+] Zoom-out
+            player.body.FOV /= 1.2;
+            player.body.refreshBodyAttributes();
+            player.body.sendMessage(
+              "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+            );
+            break;
+          case 189:
+            // [-] Zoom-in
+            player.body.FOV *= 1.2;
+            player.body.refreshBodyAttributes();
+            player.body.sendMessage(
+              "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+            );
+            break;
+          case 48:
+            // [0] Clear Zoom
+            player.body.FOV = 1;
+            player.body.refreshBodyAttributes();
+            player.body.sendMessage(
+              "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+            );
+            break;
+          case 188:
+            // [,] Smaller
+            player.body.SIZE /= 1.2;
+            player.body.refreshBodyAttributes();
+            player.body.sendMessage(
+              "Updated size to " + player.body.SIZE.toFixed(0) + "px."
+            );
+            break;
+          case 190:
+            // [.] Bigger
+            player.body.SIZE *= 1.2;
+            player.body.refreshBodyAttributes();
+            player.body.sendMessage(
+              "Updated size to " + player.body.SIZE.toFixed(0) + "px."
+            );
+            break;
+          case 186:
+            // [;] Give operator access
+            clientsAtTarget.forEach((c) => {
+              if (c.permissions && c.permissions.class === "developer") {
+                c.player.body.sendMessage(
+                  player.body.name + " attempted to give you operator access."
+                );
+                player.body.sendMessage("This entity is already an operator!");
+              } else {
+                c.operator = !c.operator;
+                c.player.body.sendMessage(
+                  c.operator
+                    ? "You are now an operator."
+                    : "You are no longer an operator."
+                );
+                player.body.sendMessage(
+                  c.operator
+                    ? "Operator access given to entity!"
+                    : "Operator access removed from entity!"
+                );
+              }
+            });
+            break;
         }
       }
       break;
@@ -794,6 +867,101 @@ function incoming(message, socket) {
       if ("string" !== typeof message) {
         socket.kick("Non-string chat message.");
         return 1;
+      }
+
+      if (message[0] === "/") {
+        // Handle command stuff
+        let parameters = message.split(" ");
+        parameters.shift();
+        switch (message.split(" ")[0].substring(1)) {
+          case "god":
+          case "invuln":
+          case "invulnerable":
+          case "enablegod":
+          case "enableinvuln":
+          case "enableinvulnerable":
+            player.body.invuln = true;
+            player.body.sendMessage("You are now invulnerable.");
+            break;
+          case "gms":
+          case "getms":
+          case "gmapsize":
+          case "getmapsize":
+            player.body.sendMessage(
+              "The map size is: " + room.width + " x " + room.height + "."
+            );
+            break;
+          case "dev":
+          case "developer":
+          case "becomedev":
+          case "becomedeveloper":
+            player.body.define("developer");
+            break;
+          case "id":
+          case "myid":
+          case "getid":
+          case "getmyid":
+          case "playerid":
+          case "getplayerid":
+            player.body.sendMessage("Your ID is: " + player.body.id);
+            break;
+          case "define":
+          case "defineentity":
+          case "tank":
+          case "tankentity":
+            try {
+              if (parameters.length >= 2) {
+                let target = entities.filter((e) => {
+                  return e.id === parameters[0];
+                })[0];
+                if (target != null) {
+                  target.define(parameters[1]);
+                }
+              } else if (parameters.length === 1) {
+                player.body.define(parameters[0]);
+              } else {
+                player.body.sendMessage(
+                  "This command requires at least 1 parameter."
+                );
+              }
+            } catch (e) {
+              player.body.sendMessage("That class doesn't exist.");
+            }
+            break;
+          case "changecolor":
+          case "changemycolor":
+          case "mycolor":
+          case "color":
+          case "col":
+          case "mycol":
+          case "changemycol":
+          case "changecol":
+            if (parameters[0]) {
+              player.body.color.base = parseInt(parameters[0], 10);
+            } else {
+              player.body.sendMessage(
+                "Your color is " + player.body.color.base
+              );
+            }
+            break;
+          case "max":
+          case "maxstats":
+          case "maxbuild":
+            player.body.skill.setCaps([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+            player.body.skill.set([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+            break;
+          case "size":
+          case "playersize":
+          case "setsize":
+          case "setplayersize":
+          case "updatesize":
+          case "mysize":
+          case "setmysize":
+          case "updatemysize":
+            player.body.SIZE = parseInt(parameters[0], 10);
+            break;
+        }
+        break;
       }
 
       events.emit("chatMessage", {
@@ -1199,9 +1367,14 @@ const spawn = (socket, name) => {
       player.team = body.team;
     }
     body.define(Config.SPAWN_CLASS);
-    if (socket.permissions && socket.permissions.nameColor) {
-      body.nameColor = socket.permissions.nameColor;
-      socket.talk("z", body.nameColor);
+    if (socket.permissions) {
+      if (socket.permissions.nameColor) {
+        body.nameColor = socket.permissions.nameColor;
+        socket.talk("z", body.nameColor);
+      }
+      if (socket.permissions.class === "developer") {
+        socket.operator = true;
+      }
     }
     body.addController(new ioTypes.listenToPlayer(body, { player }));
     socket.spectateEntity = null;
@@ -1902,7 +2075,8 @@ const sockets = {
 
     // Log it
     clients.push(socket);
-    util.log("[INFO] New socket opened with ip " + socket.ip);
+    // util.log("[INFO] New socket opened with ip " + socket.ip); // should work it works in socket.io
+    util.log("[INFO] New socket opened with an id of " + socket.id); // time to test
   },
 };
 module.exports = { sockets, chatLoop };

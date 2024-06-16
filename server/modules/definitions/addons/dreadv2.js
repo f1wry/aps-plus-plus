@@ -304,7 +304,7 @@ Class.peacekeeperOfficialV2 = {
   ),
 };
 Class.peacekeeper2OfficialV2 = {
-  PARENT: "peacekeeperOfficialV2",
+  PARENT: "peacekeeperOfficialV2", 
   BATCH_UPGRADES: true,
 };
 Class.invaderOfficialV2 = {

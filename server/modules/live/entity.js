@@ -1043,6 +1043,10 @@ class Entity extends EventEmitter {
     };
     this.invisible = [0, 0];
     this.alphaRange = [0, 1];
+    this.dragging = false;
+    this.dragged = [];
+    this.wpCurrDist = 0;
+    this.wpMinDist = Infinity;
     // Define it
     this.SIZE = 1;
     this.sizeMultiplier = 1;

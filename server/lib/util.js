@@ -7,7 +7,6 @@ exports.addArticle = (string) => {
   let article = /^[aeiou]/i.test(string) ? "an" : "a";
   return `${article} ${string}`;
 };
-
 exports.getDistance = (p1, p2) =>
   Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
@@ -90,4 +89,15 @@ exports.forcePush = (object, property, ...items) => {
   } else {
     object[property] = [...items];
   }
+};
+
+exports.playerToTarget = (p) => ({
+  x: p.body.x + p.body.control.target.x,
+  y: p.body.y + p.body.control.target.y,
+});
+
+exports.getAtPosition = (os, p) => {
+  return os.filter((o) => {
+    return util.getDistance(o, p) < o.realSize;
+  });
 };

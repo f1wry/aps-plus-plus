@@ -29,10 +29,12 @@ g.dreadv1Drone = {
   size: 1.2,
 };
 g.dreadv1Trap = {
-  range: 0.9,
-  shudder: 0.2,
-  reload: 1.75,
-};
+	range: 0.9,
+	shudder: 0.2,
+	speed: 1.15,
+	reload: 3,
+	health: 1.75,
+}
 
 // Comment out the line below to enable this addon, uncomment it to disable this addon.
 // return console.log('--- Dreadnoughts v1 addon [dreadv1.js] is disabled. See lines 32-33 to enable it. ---');

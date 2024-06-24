@@ -146,18 +146,39 @@ module.exports = {
   // NOTE: The spawn message (ex. "A strange trembling...") takes half as long to appear than the boss.
   BOSS_SPAWN_DURATION: 5,
 
-  // The possible food types that can spawn.
-  FOOD_TYPES: [
-    [
-      2000,
-      [
-        [1024, "egg"],
-        [256, "square"],
-        [64, "triangle"],
-        [16, "pentagon"],
-        [4, "betaPentagon"],
-        [1, "alphaPentagon"],
-      ],
+    ENEMY_CAP_NEST: 1, // Max nest enemies per nest tile.
+    ENEMY_SPAWN_CHANCE_NEST: 0.9, // Likeliness of nest enemies spawn attempts succeeding.
+    ENEMY_SPAWN_COOLDOWN_NEST: 60, // Cooldown (in game ticks) of nest enemies spawn attempts being made.
+
+    // Cooldown (in seconds) of boss spawns being announced.
+    BOSS_SPAWN_COOLDOWN: 60e80,
+    // The delay (in seconds) between the boss spawns being announced and the bosses actually spawning.
+    // NOTE: The spawn message (ex. "A strange trembling...") takes half as long to appear than the boss.
+    BOSS_SPAWN_DURATION: 5,
+
+    // The possible food types that can spawn.
+    FOOD_TYPES: [
+        [2000, [
+            [1024, 'egg'], [256, 'square'], [64, 'triangle'], [16, 'pentagon'], [4, 'betaPentagon'], [1, 'alphaPentagon']
+        ]],
+        [1, [
+            [3125, 'gem'], [625, 'shinySquare'], [125, 'shinyTriangle'], [25, 'shinyPentagon'], [5, 'shinyBetaPentagon'], [1, 'shinyAlphaPentagon']
+        ]],
+        [0.1, [
+            [6836, 'jewel'], [1296, 'legendarySquare'], [216, 'legendaryTriangle'], [36, 'legendaryPentagon'], [6, 'legendaryBetaPentagon'], [1, 'legendaryAlphaPentagon']
+        ]],
+        [0.005, [
+            /*[16807, 'egg'], */[2401, 'shadowSquare'], [343, 'shadowTriangle'], [49, 'shadowPentagon'], [7, 'shadowBetaPentagon'], [1, 'shadowAlphaPentagon']
+        ]],
+        [0.001, [
+            /*[65536, 'egg'], */[8192, 'rainbowSquare'], [1024, 'rainbowTriangle'], [64, 'rainbowPentagon'], [8, 'rainbowBetaPentagon'], [1, 'rainbowAlphaPentagon']
+        ]],
+        [0.0005, [
+            [59549, 'egg'], [6561, 'transSquare'], [729, 'transTriangle'], [81, 'transPentagon'], [9, 'transBetaPentagon'], [1, 'transAlphaPentagon']
+        ]],
+        [0.0001, [
+            [100000, 'sphere'], [10000, 'cube'], [1000, 'tetrahedron'], [100, 'octahedron'], [10, 'dodecahedron'], [1, 'icosahedron']
+        ]]
     ],
     [
       1,

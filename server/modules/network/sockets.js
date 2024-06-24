@@ -1856,36 +1856,35 @@ let leaderboard = new Delta(7, (args) => {
 // Periodically give out updates
 let subscribers = [];
 setInterval(() => {
-  logs.minimap.set();
-  let minimapUpdate = minimapAll.update(),
-    leaderboardUpdate,
-    teamUpdate;
-  for (let socket of subscribers) {
-    if (!socket.status.hasSpawned) continue;
-    leaderboardUpdate = leaderboard.update(
-      socket.id,
-      socket.player.body != null &&
-        (Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG))
-        ? socket.player.body.id
-        : null
-    );
-    teamUpdate = minimapTeams.update(socket.id, socket.player.team);
-    socket.talk(
-      "b",
-      ...(socket.status.needsNewBroadcast
-        ? minimapUpdate.reset
-        : minimapUpdate.update),
-      ...(teamUpdate
-        ? socket.status.needsNewBroadcast
-          ? teamUpdate.reset
-          : teamUpdate.update
-        : [0, 0]),
-      ...(socket.status.needsNewBroadcast
-        ? leaderboardUpdate.reset
-        : leaderboardUpdate.update)
-    );
-    if (socket.status.needsNewBroadcast) {
-      socket.status.needsNewBroadcast = false;
+    logs.minimap.set();
+    let minimapUpdate = minimapAll.update(),
+        leaderboardUpdate,
+        teamUpdate;
+    for (let socket of subscribers) {
+        if (!socket.status.hasSpawned) continue;
+        leaderboardUpdate = leaderboard.update(
+            socket.id,
+            (Config.GROUPS || (Config.MODE == 'ffa' && !Config.TAG)) && socket.player.body ? socket.player.body.id : null
+        );
+        teamUpdate = minimapTeams.update(
+            socket.id,
+            socket.player.team
+        );
+        socket.talk(
+            "b",
+            ...socket.status.needsNewBroadcast ? minimapUpdate.reset : minimapUpdate.update,
+            ...teamUpdate ? socket.status.needsNewBroadcast ? teamUpdate.reset : teamUpdate.update : [0, 0],
+            ...socket.status.needsNewBroadcast ? leaderboardUpdate.reset : leaderboardUpdate.update
+        );
+        if (socket.status.needsNewBroadcast) {
+            socket.status.needsNewBroadcast = false;
+        }
+    }
+    logs.minimap.mark();
+    let time = util.time();
+    for (let socket of clients) {
+        if (socket.timeout.check(time)) socket.lastWords("K");
+        if (time - socket.statuslastHeartbeat > Config.maxHeartbeatInterval) socket.kick("Lost heartbeat.");
     }
   }
   logs.minimap.mark();

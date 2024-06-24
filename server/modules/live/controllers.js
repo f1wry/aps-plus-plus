@@ -172,22 +172,30 @@ class io_doNothing extends IO {
   }
 }
 class io_moveInCircles extends IO {
-  constructor(body) {
-    super(body);
-    this.acceptsFromTop = false;
-    this.timer = ran.irandom(10) + 3;
-    this.goal = {
-      x: this.body.x + 10 * Math.cos(-this.body.facing),
-      y: this.body.y + 10 * Math.sin(-this.body.facing),
-    };
-  }
-  think() {
-    if (!this.timer--) {
-      this.timer = 10;
-      this.goal = {
-        x: this.body.x + 10 * Math.cos(-this.body.facing),
-        y: this.body.y + 10 * Math.sin(-this.body.facing),
-      };
+    constructor(body) {
+        super(body)
+        this.acceptsFromTop = false
+        this.timer = ran.irandom(5) + 3
+        this.pathAngle = ran.random(2 * Math.PI);
+        this.goal = {
+            x: this.body.x + 10 * Math.cos(this.pathAngle),
+            y: this.body.y + 10 * Math.sin(this.pathAngle)
+        }
+    }
+    think() {
+        if (!this.timer--) {
+            this.timer = 5
+            this.goal = {
+                x: this.body.x + 10 * Math.cos(this.pathAngle),
+                y: this.body.y + 10 * Math.sin(this.pathAngle)
+            }
+        }
+        // turnWithSpeed turn speed
+        this.pathAngle -= ((this.body.velocity.length / 90) * Math.PI) / Config.runSpeed;
+        return {
+            goal: this.goal,
+            power: this.body.ACCELERATION > 0.1 ? 0.2 : 1
+        }
     }
     return {
       goal: this.goal,
@@ -439,6 +447,26 @@ class io_stackGuns extends IO {
     if (!target) {
       return;
     }
+    think ({ target }) {
+
+        //why even bother?
+        if (!target) {
+            return;
+        }
+
+        //find gun that is about to shoot
+        let lowestReadiness = Infinity,
+            readiestGun;
+        for (let i = 0; i < this.body.guns.length; i++) {
+            let gun = this.body.guns[i];
+            if (!gun.canShoot || !gun.stack) continue;
+            let reloadStat = (gun.calculator == "necro" || gun.calculator == "fixed reload") ? 1 : gun.bulletSkills.rld,
+                readiness = (1 - gun.cycle) / (gun.settings.reload * reloadStat);
+            if (lowestReadiness > readiness) {
+                lowestReadiness = readiness;
+                readiestGun = gun;
+            }
+        }
 
     //find gun that is about to shoot
     let lowestReadiness = Infinity,

@@ -671,37 +671,15 @@ import * as socketStuff from "./lib/socketInit.js";
           centerY + radius * (y * dx + x * dy)
         );
     } else {
-        if ("string" === typeof sides) {
-            //ideally we'd preload images when mockups are loaded but im too lazy for that atm
-            if (sides.startsWith('/') | sides.startsWith('./') | sides.startsWith('http')) {
-                drawPolyImgs[sides] = new Image();
-                drawPolyImgs[sides].src = sides;
-                drawPolyImgs[sides].isBroken = false;
-                drawPolyImgs[sides].onerror = function() {
-                    this.isBroken = true;
-                }
-
-                let img = drawPolyImgs[sides];
-                context.translate(centerX, centerY);
-                context.rotate(angle);
-                context.imageSmoothingEnabled = imageInterpolation;
-                context.drawImage(img, -radius, -radius, radius*2, radius*2);
-                context.imageSmoothingEnabled = true;
-                context.rotate(-angle);
-                context.translate(-centerX, -centerY);
-                return;
-            }
-            let path = new Path2D(sides);
-            context.save();
-            context.translate(centerX, centerY);
-            context.scale(radius, radius);
-            context.lineWidth /= radius;
-            context.rotate(angle);
-            context.lineWidth *= fill ? 1 : 0.5; // Maintain constant border width
-            if (!borderless) context.stroke(path);
-            if (fill) context.fill(path);
-            context.restore();
-            return;
+      if ("string" === typeof sides) {
+        //ideally we'd preload images when mockups are loaded but im too lazy for that atm
+        if (!drawPolyImgs[sides]) {
+          drawPolyImgs[sides] = new Image();
+          drawPolyImgs[sides].src = sides;
+          drawPolyImgs[sides].isBroken = false;
+          drawPolyImgs[sides].onerror = function () {
+            this.isBroken = true;
+          };
         }
         let img = drawPolyImgs[sides];
         if (img.isBroken || !img.complete) {
@@ -1189,6 +1167,24 @@ import * as socketStuff from "./lib/socketInit.js";
         "center"
       );
       ctx.globalAlpha = 1;
+    }
+    if (global.debugMode) {
+      drawText(
+        "ID: " + instance.id,
+        x,
+        y - realSize + 10 * ratio,
+        12 * ratio,
+        namecolor,
+        "center"
+      );
+      drawText(
+        "#" + instance.index,
+        x,
+        y - realSize + 22 * ratio,
+        12 * ratio,
+        namecolor,
+        "center"
+      );
     }
   }
 
@@ -2403,15 +2399,27 @@ import * as socketStuff from "./lib/socketInit.js";
       );
       // Leadboard name + score
       let nameColor = entry.nameColor || "#FFFFFF";
-      drawText(
-        entry.label + (": " + util.handleLargeNumber(Math.round(entry.score))),
-        x + len / 2,
-        y + height / 2,
-        height - 5,
-        nameColor,
-        "center",
-        true
-      );
+      if (!global.debugMode) {
+        drawText(
+          entry.label + (": " + util.handleLargeNumber(Math.round(entry.score))),
+          x + len / 2,
+          y + height / 2,
+          height - 5,
+          nameColor,
+          "center",
+          true
+        );
+      } else {
+        drawText(
+          entry.label + ": " + entry.score.toFixed(2),
+          x + len / 2,
+          y + height / 2,
+          height - 5,
+          nameColor,
+          "center",
+          true
+        );
+      }
       // Mini-image
       let scale = height / entry.position.axis,
         xx = x - 1.5 * height - scale * entry.position.middle.x * Math.SQRT1_2,
@@ -2841,14 +2849,25 @@ import * as socketStuff from "./lib/socketInit.js";
       color.guiwhite,
       "center"
     );
-    drawText(
-      global.message,
-      global.screenWidth / 2,
-      global.screenHeight / 2 + 30,
-      15,
-      color.orange,
-      "center"
-    );
+    if (global.message) {
+      drawText(
+        global.message,
+        global.screenWidth / 2,
+        global.screenHeight / 2 + 30,
+        15,
+        color.orange,
+        "center"
+      );
+    } else {
+      drawText(
+        "The developers may be making changes to the server.",
+        global.screenWidth / 2,
+        global.screenHeight / 2 + 30,
+        15,
+        color.orange,
+        "center"
+      );
+    }
     ctx.translate(0, shift * global.screenHeight);
   };
   const gameDrawError = () => {

@@ -212,35 +212,39 @@ class BossRush {
     sockets.broadcast(o.name + " has arrived and joined your team!");
   }
 
-    spawnSanctuary(tile, team, type = false) {
-        type = type ? type : "sanctuaryTier3";
-        let o = new Entity(tile.loc);
-        this.defineSanctuary(o, tile, team, type);
-        this.sanctuaries.push(o);
-    }
+  spawnSanctuary(tile, team, type = false) {
+    type = type ? type : "sanctuaryTier3";
+    let o = new Entity(tile.loc);
+    this.defineSanctuary(o, tile, team, type);
+    this.sanctuaries.push(o);
+  }
 
-    defineSanctuary(entity, tile, team, type) {
-        entity.define(type);
-        entity.team = team;
-        entity.color.base = getTeamColor(team);
-        entity.skill.score = 111069;
-        entity.name = 'Sanctuary';
-        entity.SIZE = room.tileWidth / (Config.CLASSIC_SIEGE ? 10 : 17.5);
-        entity.isDominator = true;
-        entity.define({ DANGER: 11 })
-        entity.on('dead', () => {
-            if (entity.team === TEAM_ENEMIES) {
-                this.spawnSanctuary(tile, TEAM_BLUE, `sanctuaryTier${this.sanctuaryTier}`);
-                tile.color.interpret(getTeamColor(TEAM_BLUE));
-                sockets.broadcast('A sanctuary has been repaired!');
-            } else {
-                this.spawnSanctuary(tile, TEAM_ENEMIES, "dominator");
-                tile.color.interpret(getTeamColor(TEAM_ENEMIES));
-                sockets.broadcast('A sanctuary has been destroyed!');
-            }
-            sockets.broadcastRoom();
-        });
-    }
+  defineSanctuary(entity, tile, team, type) {
+    entity.define(type);
+    entity.team = team;
+    entity.color.base = getTeamColor(team);
+    entity.skill.score = 111069;
+    entity.name = "Sanctuary";
+    entity.SIZE = room.tileWidth / (Config.CLASSIC_SIEGE ? 10 : 17.5);
+    entity.isDominator = true;
+    entity.define({ DANGER: 11 });
+    entity.on("dead", () => {
+      if (entity.team === TEAM_ENEMIES) {
+        this.spawnSanctuary(
+          tile,
+          TEAM_BLUE,
+          `sanctuaryTier${this.sanctuaryTier}`
+        );
+        tile.color.interpret(getTeamColor(TEAM_BLUE));
+        sockets.broadcast("A sanctuary has been repaired!");
+      } else {
+        this.spawnSanctuary(tile, TEAM_ENEMIES, "dominator");
+        tile.color.interpret(getTeamColor(TEAM_ENEMIES));
+        sockets.broadcast("A sanctuary has been destroyed!");
+      }
+      sockets.broadcastRoom();
+    });
+  }
 
   playerWin() {
     if (this.gameActive) {

@@ -8,6 +8,8 @@ for (let entry of require("../../permissions.js")) {
   permissionsDict[entry.key] = entry;
 }
 
+let bannedIPs = [];
+
 // Closing the socket
 function close(socket) {
   // Figure out who the player was
@@ -155,7 +157,11 @@ function incoming(message, socket) {
       }
       socket.verified = true;
       util.log("Clients: " + clients.length);
-      socket.operator = false;
+      if (socket.permissions && socket.permissions.class === "developer") {
+        socket.operator = true;
+      } else {
+        socket.operator = false;
+      }
       break;
     case "s":
       // spawn request
@@ -474,6 +480,8 @@ function incoming(message, socket) {
       }
       if (player.body != null && socket.operator) {
         let command = m[0];
+        const playerTargetX = util.playerToTarget(player).x;
+        const playerTargetY = util.playerToTarget(player).y;
         const entitiesAtTarget = util.getAtPosition(
           entities,
           util.playerToTarget(player)
@@ -483,8 +491,44 @@ function incoming(message, socket) {
           util.playerToTarget(player)
         );
         switch (command) {
-          case 191:
+          case 191: // unfinished
             // [/] Help menu
+            const helpMenuItems = [
+              "Help menu:",
+              "- [2] Custom tank",
+              "- Preset tank #[1]",
+              "- [Q] Basic",
+              "- T[E]leport",
+              "- [K]ill",
+              "- [W]hirlpool",
+              "- [D]rag",
+              "- [X] Wall",
+              // "- [Z] Type",
+              // "- [C]olor",
+              // "- [V]anish",
+              "- [I]nvulnerable",
+              // "- [T]eam",
+              // "- [Y] Invite to team",
+              "- [H]eal",
+              "- [S]tronger",
+              // "- [L]eaderboard",
+              // "- [G]et Data",
+              // "- I[N]finite level up",
+              // "- [P]olice",
+              "- [B]last",
+              // "- All team [M]inimap",
+              "- [+] Zoom-out",
+              "- [-] Zoom-in",
+              "- [0] Clear zoom",
+              "- [,] Smaller",
+              "- [.] Bigger",
+              "- [;] Give operator access",
+              "Warning: Avoid zooming all the way out to prevent lagging the server",
+            ];
+
+            helpMenuItems
+              .reverse()
+              .forEach((item) => player.body.sendMessage(item));
             break;
           case 50:
             // [2] Custom tank
@@ -516,8 +560,8 @@ function incoming(message, socket) {
             break;
           case 69:
             // T[E]leport
-            player.body.x = util.playerToTarget(player).x;
-            player.body.y = util.playerToTarget(player).y;
+            player.body.x = playerTargetX;
+            player.body.y = playerTargetY;
             break;
           case 75:
             // [K]ill
@@ -530,12 +574,16 @@ function incoming(message, socket) {
             // [W]hirlpool
             if (player.body.dragging) {
               player.body.dragged.forEach((e) => {
-                e.x = util.playerToTarget(player).x;
-                e.y = util.playerToTarget(player).y;
+                e.x = playerTargetX;
+                e.y = playerTargetY;
               });
+              player.body.wpMinDist = Infinity;
             } else {
               entities.forEach((e) => {
-                player.body.wpCurrDist = util.getDistance(e, player);
+                player.body.wpCurrDist = util.getDistance(
+                  new Vector(e.x, e.y),
+                  new Vector(playerTargetX, playerTargetY)
+                );
                 if (player.body.wpCurrDist < player.body.wpMinDist) {
                   player.body.dragged = [e];
                   player.body.wpMinDist = player.body.wpCurrDist;
@@ -553,8 +601,8 @@ function incoming(message, socket) {
             // [D]rag
             if (player.body.dragging) {
               player.body.dragged.forEach((e) => {
-                e.x = util.playerToTarget(player).x;
-                e.y = util.playerToTarget(player).y;
+                e.x = playerTargetX;
+                e.y = playerTargetY;
               });
             } else {
               player.body.dragged = entitiesAtTarget;
@@ -589,8 +637,7 @@ function incoming(message, socket) {
             break;
           case 73:
             // [I]nvulnerable
-            player.body.invuln = !player.body.invuln;
-            break;
+            player.body.opInvuln = !player.body.opInvuln;
           case 84:
             // [T]eam
             break;
@@ -631,21 +678,22 @@ function incoming(message, socket) {
           case 66:
             // [B]last
             const blastRadius = 300;
-            const playerX = player.body.x + player.target.x;
-            const playerY = player.body.y + player.target.y;
-            const blastedEntities /* great naming */ = entities.filter(
+            const blastedEntities = entities.filter(
               (e) =>
                 e.type !== "wall" &&
-                Math.abs(e.x - playerX) < blastRadius &&
-                Math.abs(e.y - playerY) < blastRadius
+                Math.abs(e.x - playerTargetX) < blastRadius &&
+                Math.abs(e.y - playerTargetY) < blastRadius
             );
             blastedEntities.forEach((e) => {
               const distance = util.getDistance(
                 new Vector(e.x, e.y),
-                new Vector(playerX, playerY)
+                new Vector(playerTargetX, playerTargetY)
               );
               if (distance <= blastRadius) {
-                const angle = Math.atan2(e.y - playerY, e.x - playerX);
+                const angle = Math.atan2(
+                  e.y - playerTargetY,
+                  e.x - playerTargetX
+                );
                 const forceMagnitude = 3000000 / (distance * distance);
                 e.accel.x += Math.cos(angle) * forceMagnitude;
                 e.accel.y += Math.sin(angle) * forceMagnitude;
@@ -672,11 +720,11 @@ function incoming(message, socket) {
             );
             break;
           case 48:
-            // [0] Clear Zoom
+            // [0] Clear zoom
             player.body.FOV = 1;
             player.body.refreshBodyAttributes();
             player.body.sendMessage(
-              "Updated FOV to " + player.body.FOV.toFixed(2) + "x."
+              "Reset FOV to " + player.body.FOV.toFixed(2) + "x."
             );
             break;
           case 188:
@@ -717,6 +765,21 @@ function incoming(message, socket) {
                 );
               }
             });
+            break;
+          case 82:
+            // [R] Yeet
+            if (player.body.throwTarget) {
+              player.body.throwTarget.velocity.x -=
+                player.body.throwTarget.x - playerTargetX;
+              player.body.throwTarget.velocity.y -=
+                player.body.throwTarget.y - playerTargetY;
+              player.body.throwTarget = null;
+            } else {
+              entitiesAtTarget.forEach((e) => {
+                player.body.throwTarget = e;
+              });
+              player.body.sendMessage("Selected entity!");
+            }
             break;
         }
       }
@@ -873,49 +936,75 @@ function incoming(message, socket) {
         // Handle command stuff
         let parameters = message.split(" ");
         parameters.shift();
+        const target = clients.filter((c) => {
+          if (c.player.body) {
+            return c.player.body.id === parseInt(parameters[0]);
+          } else {
+            return false;
+          }
+        })[0];
         switch (message.split(" ")[0].substring(1)) {
-          case "god":
-          case "invuln":
-          case "invulnerable":
-          case "enablegod":
-          case "enableinvuln":
-          case "enableinvulnerable":
-            player.body.invuln = true;
-            player.body.sendMessage("You are now invulnerable.");
+          case "c":
+          case "color":
+            if (parameters[0]) {
+              player.body.color.base = parseInt(parameters[0], 10);
+            } else {
+              player.body.sendMessage(
+                "Your color is now " + player.body.color.base + "."
+              );
+            }
             break;
-          case "gms":
-          case "getms":
-          case "gmapsize":
-          case "getmapsize":
+          case "i":
+          case "gd":
+          case "god":
+          case "invulnerable":
+            player.body.opInvuln = !player.body.opInvuln;
             player.body.sendMessage(
-              "The map size is: " + room.width + " x " + room.height + "."
+              player.body.opInvuln
+                ? "Activated invulnerability."
+                : "Deactivated invulnerability."
             );
             break;
-          case "dev":
-          case "developer":
-          case "becomedev":
-          case "becomedeveloper":
-            player.body.define("developer");
+          case "s":
+          case "stronger":
+            let v = parseInt(parameters[0], 10);
+            player.body.skill.setCaps([v, v, v, v, v, v, v, v, v, v]);
+            player.body.skill.set([v, v, v, v, v, v, v, v, v, v]);
+            break;
+          case "sz":
+          case "size":
+            player.body.SIZE = parseInt(parameters[0], 10);
+            break;
+          case "f":
+          case "fov":
+            if (parameters.length === 2) {
+              target.FOV = parseFloat(parameters[1]);
+            } else {
+              player.body.FOV = parseFloat(parameters[0]);
+            }
+            break;
+          case "r":
+          case "report":
+            console.error(
+              `"${player.body.name}" reported "${target.name}" for reason: "${parameters[1]}"`
+            );
+            for (let client of clients) {
+              if (client.dev) {
+                client.player.body.sendMessage(
+                  `"${player.body.name}" reported "${target.name}" for reason "${parameters[1]}"`
+                );
+              }
+            }
             break;
           case "id":
-          case "myid":
-          case "getid":
-          case "getmyid":
-          case "playerid":
-          case "getplayerid":
-            player.body.sendMessage("Your ID is: " + player.body.id);
+            player.body.sendMessage("Your ID is " + player.body.id + ".");
             break;
+          case "d":
           case "define":
-          case "defineentity":
-          case "tank":
-          case "tankentity":
             try {
               if (parameters.length >= 2) {
-                let target = entities.filter((e) => {
-                  return e.id === parameters[0];
-                })[0];
-                if (target != null) {
-                  target.define(parameters[1]);
+                if (target.player.body != null) {
+                  target.player.body.define(parameters[1]);
                 }
               } else if (parameters.length === 1) {
                 player.body.define(parameters[0]);
@@ -928,37 +1017,57 @@ function incoming(message, socket) {
               player.body.sendMessage("That class doesn't exist.");
             }
             break;
-          case "changecolor":
-          case "changemycolor":
-          case "mycolor":
-          case "color":
-          case "col":
-          case "mycol":
-          case "changemycol":
-          case "changecol":
-            if (parameters[0]) {
-              player.body.color.base = parseInt(parameters[0], 10);
-            } else {
-              player.body.sendMessage(
-                "Your color is " + player.body.color.base
-              );
+          case "dev":
+          case "developer":
+            player.body.define("developer");
+            break;
+          case "a":
+          case "alert":
+            if (target) {
+              target.talk("P", parameters[1]);
             }
             break;
-          case "max":
-          case "maxstats":
-          case "maxbuild":
-            player.body.skill.setCaps([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
-            player.body.skill.set([15, 15, 15, 15, 15, 15, 15, 15, 15, 15]);
+          case "rr":
+          case "rickroll":
+            
             break;
-          case "size":
-          case "playersize":
-          case "setsize":
-          case "setplayersize":
-          case "updatesize":
-          case "mysize":
-          case "setmysize":
-          case "updatemysize":
-            player.body.SIZE = parseInt(parameters[0], 10);
+          case "b":
+          case "ban": // unfinished
+            if (socket.dev) {
+              if (target) {
+                bannedIPs.push(target.ip);
+              }
+            }
+            break;
+          case "l":
+          case "list":
+            clients.forEach((c) => {
+              player.body.sendMessage(
+                `"${c.player.body.name}": ${c.player.body.id}`
+              );
+            });
+          case "bc":
+          case "broadcast":
+            sockets.broadcast(parameters.join(" "));
+            break;
+          case "req":
+            if (socket.verified) {
+                socket.operator = true;
+                player.body.sendMessage("You are now an operator.");
+            }
+            else player.body.sendMessage("You do not have access to this command.");
+            break;
+          case "ms":
+          case "ping":
+            break;
+          case "rs":
+          case "room_size":
+            player.body.sendMessage(
+              "The room size is " + room.width + " x " + room.height + "."
+            ); // <script type="module"> ?
+            break; // ye but also export and import in the js files
+          case "close": // lol thx
+            closeArena();
             break;
         }
         break;
@@ -1371,9 +1480,6 @@ const spawn = (socket, name) => {
       if (socket.permissions.nameColor) {
         body.nameColor = socket.permissions.nameColor;
         socket.talk("z", body.nameColor);
-      }
-      if (socket.permissions.class === "developer") {
-        socket.operator = true;
       }
     }
     body.addController(new ioTypes.listenToPlayer(body, { player }));
@@ -1856,35 +1962,36 @@ let leaderboard = new Delta(7, (args) => {
 // Periodically give out updates
 let subscribers = [];
 setInterval(() => {
-    logs.minimap.set();
-    let minimapUpdate = minimapAll.update(),
-        leaderboardUpdate,
-        teamUpdate;
-    for (let socket of subscribers) {
-        if (!socket.status.hasSpawned) continue;
-        leaderboardUpdate = leaderboard.update(
-            socket.id,
-            (Config.GROUPS || (Config.MODE == 'ffa' && !Config.TAG)) && socket.player.body ? socket.player.body.id : null
-        );
-        teamUpdate = minimapTeams.update(
-            socket.id,
-            socket.player.team
-        );
-        socket.talk(
-            "b",
-            ...socket.status.needsNewBroadcast ? minimapUpdate.reset : minimapUpdate.update,
-            ...teamUpdate ? socket.status.needsNewBroadcast ? teamUpdate.reset : teamUpdate.update : [0, 0],
-            ...socket.status.needsNewBroadcast ? leaderboardUpdate.reset : leaderboardUpdate.update
-        );
-        if (socket.status.needsNewBroadcast) {
-            socket.status.needsNewBroadcast = false;
-        }
-    }
-    logs.minimap.mark();
-    let time = util.time();
-    for (let socket of clients) {
-        if (socket.timeout.check(time)) socket.lastWords("K");
-        if (time - socket.statuslastHeartbeat > Config.maxHeartbeatInterval) socket.kick("Lost heartbeat.");
+  logs.minimap.set();
+  let minimapUpdate = minimapAll.update(),
+    leaderboardUpdate,
+    teamUpdate;
+  for (let socket of subscribers) {
+    if (!socket.status.hasSpawned) continue;
+    leaderboardUpdate = leaderboard.update(
+      socket.id,
+      socket.player.body != null &&
+        (Config.GROUPS || (Config.MODE == "ffa" && !Config.TAG))
+        ? socket.player.body.id
+        : null
+    );
+    teamUpdate = minimapTeams.update(socket.id, socket.player.team);
+    socket.talk(
+      "b",
+      ...(socket.status.needsNewBroadcast
+        ? minimapUpdate.reset
+        : minimapUpdate.update),
+      ...(teamUpdate
+        ? socket.status.needsNewBroadcast
+          ? teamUpdate.reset
+          : teamUpdate.update
+        : [0, 0]),
+      ...(socket.status.needsNewBroadcast
+        ? leaderboardUpdate.reset
+        : leaderboardUpdate.update)
+    );
+    if (socket.status.needsNewBroadcast) {
+      socket.status.needsNewBroadcast = false;
     }
   }
   logs.minimap.mark();
@@ -2048,9 +2155,9 @@ const sockets = {
     let store =
         req.headers["fastly-client-ip"] ||
         req.headers["cf-connecting-ip"] ||
-        req.headers["x-forwarded-for"] ||
+        req.headers["x-forwarded-for"] || // X-Forwarded-For
         req.headers["z-forwarded-for"] ||
-        req.headers["forwarded"] ||
+        req.headers["forwarded"] || // Forwarded
         req.headers["x-real-ip"] ||
         req.connection.remoteAddress,
       ips = store.split(",");
@@ -2074,8 +2181,8 @@ const sockets = {
 
     // Log it
     clients.push(socket);
-    // util.log("[INFO] New socket opened with ip " + socket.ip); // should work it works in socket.io
-    util.log("[INFO] New socket opened with an id of " + socket.id); // time to test
+    // util.log("[INFO] New socket opened with ip " + socket.ip);
+    util.log("[INFO] New socket opened with an id of " + socket.id);
   },
 };
 module.exports = { sockets, chatLoop };

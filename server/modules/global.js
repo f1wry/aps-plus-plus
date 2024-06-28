@@ -185,29 +185,29 @@ global.makeHitbox = (wall) => {
 
 // Now that we've set up the global variables, we import all the modules, then put them into global varialbles and then export something just so this file is run.
 const requires = [
-    "./physics/relative.js", // Some basic physics functions that are used across the game.
-    "./physics/collisionFunctions.js", // The actual collision functions that make the game work.
-    "./live/color.js", // The class that makes dealing with colors easier.
-    "./live/entitySubFunctions.js", // Skill, HealthType and other functions related to entities are here.
-    "./live/controllers.js", // The AI of the game.
-    "./live/entity.js", // The actual Entity constructor.
-    "./definitions/combined.js", // Class dictionary.
-    "./network/sockets.js", // The networking that helps players interact with the game.
-    "./network/webServer.js", // The networking that actually hosts the server.
-    "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.
-    "./debug/speedLoop.js", // The speed check loop lmao.
-    "./setup/room.js", // These are the basic room functions, set up by config.json
-    "./setup/mockups.js", // This file loads the mockups.
-    "./gamemodes/bossRush.js", // Boss Rush
-    "./gamemodes/maze.js", // Maze
-    "./gamemodes/mothership.js", // The mothership mode
-    "./gamemodes/manhunt.js", // The Manhunt mode
-    "./gamemodes/trainwars.js", // The Train Wars mode
-    "./gamemodes/moon.js", // The Space mode
-    "./gamemodes/gamemodeLoop.js", // The gamemode loop.
-    "./gamemodes/groups.js", // Duos/Trios/Squads
-    "./gamemodes/tag.js", // Tag
-    "./gamemodes/closeArena.js", // Arena Closing mechanics
+  "./physics/relative.js", // Some basic physics functions that are used across the game.
+  "./physics/collisionFunctions.js", // The actual collision functions that make the game work.
+  "./live/color.js", // The class that makes dealing with colors easier.
+  "./live/entitySubFunctions.js", // Skill, HealthType and other functions related to entities are here.
+  "./live/controllers.js", // The AI of the game.
+  "./live/entity.js", // The actual Entity constructor.
+  "./definitions/combined.js", // Class dictionary.
+  "./setup/room.js", // These are the basic room functions, set up by config.json
+  "./network/sockets.js", // The networking that helps players interact with the game.
+  "./network/webServer.js", // The networking that actually hosts the server.
+  "./setup/mockups.js", // This file loads the mockups.
+  "./debug/logs.js", // The logging pattern for the game. Useful for pinpointing lag.
+  "./debug/speedLoop.js", // The speed check loop lmao.
+  "./gamemodes/bossRush.js", // Boss Rush
+  "./gamemodes/maze.js", // Maze
+  "./gamemodes/mothership.js", // The mothership mode
+  "./gamemodes/manhunt.js", // The Manhunt mode
+  "./gamemodes/trainwars.js", // The Train Wars mode
+  "./gamemodes/moon.js", // The Space mode
+  "./gamemodes/gamemodeLoop.js", // The gamemode loop.
+  "./gamemodes/groups.js", // Duos/Trios/Squads
+  "./gamemodes/tag.js", // Tag
+  "./gamemodes/closeArena.js", // Arena Closing mechanics
 ];
 
 for (let file of requires) {

@@ -109,6 +109,14 @@ class Canvas {
           break;
         }
         break;
+      case global.KEY_SLASH:
+        // Talk with / instead?
+        if (this.chatInput.hidden && global.gameStart) {
+          this.chatInput.hidden = false;
+          this.chatInput.focus();
+          break;
+        }
+        break;
 
       case global.KEY_UP_ARROW:
         if (!global.died && global.showTree)
@@ -193,6 +201,9 @@ class Canvas {
         case global.KEY_CLASS_TREE:
           global.treeScale = 1;
           global.showTree = !global.showTree;
+          break;
+        case global.KEY_DEBUG_MODE:
+          global.debugMode = !global.debugMode;
           break;
       }
       if (global.canSkill) {

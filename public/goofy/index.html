@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      html {
+        font-family: monospace;
+        background-color: #222;
+        color: white;
+        text-shadow: 1.5px 1.5px 2px black, 0 0 30px rgba(255, 255, 255, 0.5);
+      }
+      #codeinput {
+        background-color: #111;
+        color: white;
+        text-shadow: 0 0 2px, 0 0 20px, 0 0 70px;
+        width: 100%;
+        height: 300px;
+        resize: none;
+        animation: rainbow 12s infinite;
+        border-radius: 5px;
+        border: 4px solid #555;
+      }
+      @keyframes rainbow {
+        0% {
+          color: #faa;
+        }
+        16.67% {
+          color: #ffa;
+        }
+        33.33% {
+          color: #afa;
+        }
+        50% {
+          color: #aff;
+        }
+        66.67% {
+          color: #aaf;
+        }
+        83.33% {
+          color: #faf;
+        }
+        100% {
+          color: #faa;
+        }
+      }
+    </style>
+    <script type="module" src="/goofy/interpreter/lexer.js"></script>
+    <script type="module" src="/goofy/interpreter/parser.js"></script>
+    <script type="module" src="/goofy/interpreter/interpreter.js"></script>
+    <script type="module" src="/goofy/interpreter/index.js"></script>
+  </head>
+  <body>
+    <div>
+      <h2>
+        Terminal
+      </h2>
+      <div id="codeinput" contenteditable="plaintext-only">test</div>
+    </div>
+    <button id="interpretButton">Run</button>
+    <div id="debug">
+      TOKENS: <div id="tokens"></div><br>
+      TOKENS2: <div id="tokens2"></div><br>
+      AST: <div id="ast"></div><br>
+      RESULT: <div id="value"></div>
+    </div>
+  </body>
+</html>

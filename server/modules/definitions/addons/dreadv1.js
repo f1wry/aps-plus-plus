@@ -1,6 +1,6 @@
-const { combineStats, makeAuto, weaponArray } = require('../facilitators.js');
-const { smshskl, base } = require('../constants.js');
-const g = require('../gunvals.js');
+const { combineStats, makeAuto, weaponArray } = require("../facilitators.js");
+const { gunCalcNames, smshskl, base } = require("../constants.js");
+const g = require("../gunvals.js");
 const dreadnoughtBody = {
   SPEED: base.SPEED * 0.5,
   HEALTH: base.HEALTH * 5,
@@ -29,12 +29,12 @@ g.dreadv1Drone = {
   size: 1.2,
 };
 g.dreadv1Trap = {
-	range: 0.9,
-	shudder: 0.2,
-	speed: 1.15,
-	reload: 3,
-	health: 1.75,
-}
+  range: 0.9,
+  shudder: 0.2,
+  speed: 1.15,
+  reload: 3,
+  health: 1.75,
+};
 
 // Comment out the line below to enable this addon, uncomment it to disable this addon.
 // return console.log('--- Dreadnoughts v1 addon [dreadv1.js] is disabled. See lines 32-33 to enable it. ---');
@@ -271,40 +271,53 @@ Class.pacifierOfficialV1 = {
 };
 
 Class.invaderOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Invader",
-	UPGRADE_TOOLTIP: "Drones",
-	GUNS: weaponArray({
-		POSITION: [5.5, 7.5, 1.3, 7.5, 0, 0, 0],
-		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.drone, g.overseer, g.dreadv1Drone]),
-			TYPE: "drone",
-			AUTOFIRE: true,
-			SYNCS_SKILLS: true,
-			STAT_CALCULATOR: "drone",
-			WAIT_TO_CYCLE: true,
-			MAX_CHILDREN: 4,
-		}
-	}, 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Invader",
+  UPGRADE_TOOLTIP: "Drones",
+  GUNS: weaponArray(
+    {
+      POSITION: [5.5, 7.5, 1.3, 7.5, 0, 0, 0],
+      PROPERTIES: {
+        SHOOT_SETTINGS: combineStats([g.drone, g.overseer, g.dreadv1Drone]),
+        TYPE: "drone",
+        AUTOFIRE: true,
+        SYNCS_SKILLS: true,
+        STAT_CALCULATOR: gunCalcNames.drone,
+        WAIT_TO_CYCLE: true,
+        MAX_CHILDREN: 4,
+      },
+    },
+    3
+  ),
+};
 
 Class.centaurOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Centaur",
-	UPGRADE_TOOLTIP: "Traps",
-	GUNS: weaponArray([
-		{
-			POSITION: [12.5, 7, 1, 0, 0, 0, 0],
-		}, {
-			POSITION: [2.5, 7, 1.6, 12.5, 0, 0, 0],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, {reload: 0.55}]),
-				TYPE: ["trap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "trap",
-			},
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Centaur",
+  UPGRADE_TOOLTIP: "Traps",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [12.5, 7, 1, 0, 0, 0, 0],
+      },
+      {
+        POSITION: [2.5, 7, 1.6, 12.5, 0, 0, 0],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { reload: 0.55 },
+          ]),
+          TYPE: ["trap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.trap,
+        },
+      },
+    ],
+    3
+  ),
+};
 
 Class.automationOfficialV1 = {
   PARENT: "genericDreadnought1",
@@ -520,142 +533,228 @@ Class.diplomatOfficialV1 = {
 };
 
 Class.inquisitorOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Inquisitor",
-	UPGRADE_TOOLTIP: "Drones",
-	GUNS: weaponArray({
-		POSITION: [7, 7.5, 1.3, 7.5, 0, 0, 0],
-		PROPERTIES: {
-			SHOOT_SETTINGS: combineStats([g.drone, g.overseer, g.dreadv1Drone, {speed: 0.95, maxSpeed: 0.95, damage: 0.9, health: 0.92}]),
-			TYPE: "drone",
-			AUTOFIRE: true,
-			SYNCS_SKILLS: true,
-			STAT_CALCULATOR: "drone",
-			WAIT_TO_CYCLE: true,
-			MAX_CHILDREN: 5,
-		}
-	}, 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Inquisitor",
+  UPGRADE_TOOLTIP: "Drones",
+  GUNS: weaponArray(
+    {
+      POSITION: [7, 7.5, 1.3, 7.5, 0, 0, 0],
+      PROPERTIES: {
+        SHOOT_SETTINGS: combineStats([
+          g.drone,
+          g.overseer,
+          g.dreadv1Drone,
+          { speed: 0.95, maxSpeed: 0.95, damage: 0.9, health: 0.92 },
+        ]),
+        TYPE: "drone",
+        AUTOFIRE: true,
+        SYNCS_SKILLS: true,
+        STAT_CALCULATOR: gunCalcNames.drone,
+        WAIT_TO_CYCLE: true,
+        MAX_CHILDREN: 5,
+      },
+    },
+    3
+  ),
+};
 Class.assailantOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Assailant",
-	UPGRADE_TOOLTIP: "Minions",
-	GUNS: weaponArray([
-		{
-			POSITION: [13.75, 8, 1, 0, 0, 0, 0],
-		}, {
-			POSITION: [1, 10, 1, 13.75, 0, 0, 0],
-			PROPERTIES: {
-				MAX_CHILDREN: 4,
-				SHOOT_SETTINGS: combineStats([g.factory, g.overseer, g.dreadv1Drone, {damage: 0.6, speed: 0.85, maxSpeed: 0.85}]),
-				TYPE: "weakMinion",
-				STAT_CALCULATOR: "drone",
-				AUTOFIRE: true,
-				SYNCS_SKILLS: true
-			}
-		}, {
-			POSITION: [12.25, 10, 1, 0, 0, 0, 0]
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Assailant",
+  UPGRADE_TOOLTIP: "Minions",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [13.75, 8, 1, 0, 0, 0, 0],
+      },
+      {
+        POSITION: [1, 10, 1, 13.75, 0, 0, 0],
+        PROPERTIES: {
+          MAX_CHILDREN: 4,
+          SHOOT_SETTINGS: combineStats([
+            g.factory,
+            g.overseer,
+            g.dreadv1Drone,
+            { damage: 0.6, speed: 0.85, maxSpeed: 0.85 },
+          ]),
+          TYPE: "weakMinion",
+          STAT_CALCULATOR: gunCalcNames.drone,
+          AUTOFIRE: true,
+          SYNCS_SKILLS: true,
+        },
+      },
+      {
+        POSITION: [12.25, 10, 1, 0, 0, 0, 0],
+      },
+    ],
+    3
+  ),
+};
 Class.infiltratorOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Infiltrator",
-	UPGRADE_TOOLTIP: "Swarms",
-	GUNS: weaponArray([
-		{
-			POSITION: [7, 6, 0.6, 5.5, 2.8, 0, 0.5],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.swarm, g.carrier, { reload: 2, speed: 0.5, range: 0.9, health: 0.85}]),
-				TYPE: "swarm",
-				STAT_CALCULATOR: "swarm"
-			}
-		}, {
-			POSITION: [7, 6, 0.6, 5.5, -2.8, 0, 0.5],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.swarm, g.carrier, { reload: 2, speed: 0.5, range: 0.9, health: 0.85}]),
-				TYPE: "swarm",
-				STAT_CALCULATOR: "swarm"
-			}
-		}, {
-			POSITION: [7, 6, 0.6, 8, 0, 0, 0],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.swarm, g.carrier, { reload: 2, speed: 0.5, range: 0.9, health: 0.85}]),
-				TYPE: "swarm",
-				STAT_CALCULATOR: "swarm"
-			}
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Infiltrator",
+  UPGRADE_TOOLTIP: "Swarms",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [7, 6, 0.6, 5.5, 2.8, 0, 0.5],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.swarm,
+            g.carrier,
+            { reload: 2, speed: 0.5, range: 0.9, health: 0.85 },
+          ]),
+          TYPE: "swarm",
+          STAT_CALCULATOR: gunCalcNames.swarm,
+        },
+      },
+      {
+        POSITION: [7, 6, 0.6, 5.5, -2.8, 0, 0.5],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.swarm,
+            g.carrier,
+            { reload: 2, speed: 0.5, range: 0.9, health: 0.85 },
+          ]),
+          TYPE: "swarm",
+          STAT_CALCULATOR: gunCalcNames.swarm,
+        },
+      },
+      {
+        POSITION: [7, 6, 0.6, 8, 0, 0, 0],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.swarm,
+            g.carrier,
+            { reload: 2, speed: 0.5, range: 0.9, health: 0.85 },
+          ]),
+          TYPE: "swarm",
+          STAT_CALCULATOR: gunCalcNames.swarm,
+        },
+      },
+    ],
+    3
+  ),
+};
 
 Class.cerberusOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Cerberus",
-	UPGRADE_TOOLTIP: "Trap Spam",
-	GUNS: weaponArray([
-		{
-			POSITION: [13.5, 2.25, 1, 0, 4, 0, 0]
-		}, {
-			POSITION: [1.75, 2.25, 1.7, 13.5, 4, 0, 0],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.flankGuard, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, { size: 1.3 }]),
-				TYPE: ["trap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "trap",
-			},
-		}, {
-			POSITION: [13.5, 2.25, 1, 0, -4, 0, 0]
-		}, {
-			POSITION: [1.75, 2.25, 1.7, 13.5, -4, 0, 1/3],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.flankGuard, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, { size: 1.3 }]),
-				TYPE: ["trap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "trap"
-			}
-		}, {
-			POSITION: [15, 3, 1, 0, 0, 0, 0]
-		}, {
-			POSITION: [2, 3, 1.7, 15, 0, 0, 2/3],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.flankGuard, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, { size: 1.3 }]),
-				TYPE: ["trap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "trap"
-			}
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Cerberus",
+  UPGRADE_TOOLTIP: "Trap Spam",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [13.5, 2.25, 1, 0, 4, 0, 0],
+      },
+      {
+        POSITION: [1.75, 2.25, 1.7, 13.5, 4, 0, 0],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.flankGuard,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { size: 1.3 },
+          ]),
+          TYPE: ["trap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.trap,
+        },
+      },
+      {
+        POSITION: [13.5, 2.25, 1, 0, -4, 0, 0],
+      },
+      {
+        POSITION: [1.75, 2.25, 1.7, 13.5, -4, 0, 1 / 3],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.flankGuard,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { size: 1.3 },
+          ]),
+          TYPE: ["trap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.trap,
+        },
+      },
+      {
+        POSITION: [15, 3, 1, 0, 0, 0, 0],
+      },
+      {
+        POSITION: [2, 3, 1.7, 15, 0, 0, 2 / 3],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.flankGuard,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { size: 1.3 },
+          ]),
+          TYPE: ["trap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.trap,
+        },
+      },
+    ],
+    3
+  ),
+};
 Class.minotaurOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Minotaur",
-	UPGRADE_TOOLTIP: "Blocks",
-	GUNS: weaponArray([
-		{
-			POSITION: [13, 9, 1, 0, 0, 0, 0],
-		}, {
-			POSITION: [3, 9, 1.6, 13, 0, 0, 0],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.setTrap, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, { reload: 1.5, health: 1.4, size: 1.3 }]),
-				TYPE: ["unsetTrap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "block"
-			}
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Minotaur",
+  UPGRADE_TOOLTIP: "Blocks",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [13, 9, 1, 0, 0, 0, 0],
+      },
+      {
+        POSITION: [3, 9, 1.6, 13, 0, 0, 0],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.setTrap,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { reload: 1.5, health: 1.4, size: 1.3 },
+          ]),
+          TYPE: ["unsetTrap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.block,
+        },
+      },
+    ],
+    3
+  ),
+};
 Class.sirenOfficialV1 = {
-	PARENT: "genericDreadnought1",
-	LABEL: "Siren",
-	GUNS: weaponArray([
-		{
-			POSITION: [13, 7, -1.5, 0, 0, 0, 0],
-		}, {
-			POSITION: [2.5, 7, 1.6, 13, 0, 0, 0],
-			PROPERTIES: {
-				SHOOT_SETTINGS: combineStats([g.trap, g.hexaTrapper, g.dreadv1Generic, g.dreadv1Slow, g.dreadv1Trap, { size: 1.3 }]),
-				TYPE: ["turretedTrap", {HITS_OWN_TYPE: "never"} ],
-				STAT_CALCULATOR: "trap",
-			}
-		}
-	], 3)
-}
+  PARENT: "genericDreadnought1",
+  LABEL: "Siren",
+  GUNS: weaponArray(
+    [
+      {
+        POSITION: [13, 7, -1.5, 0, 0, 0, 0],
+      },
+      {
+        POSITION: [2.5, 7, 1.6, 13, 0, 0, 0],
+        PROPERTIES: {
+          SHOOT_SETTINGS: combineStats([
+            g.trap,
+            g.hexaTrapper,
+            g.dreadv1Generic,
+            g.dreadv1Slow,
+            g.dreadv1Trap,
+            { size: 1.3 },
+          ]),
+          TYPE: ["turretedTrap", { HITS_OWN_TYPE: "never" }],
+          STAT_CALCULATOR: gunCalcNames.trap,
+        },
+      },
+    ],
+    3
+  ),
+};
 
 Class.mechanismOfficialV1 = {
   PARENT: "genericDreadnought1",

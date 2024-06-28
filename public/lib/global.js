@@ -54,6 +54,7 @@ const global = {
   KEY_SHIFT: 16, // Shift
   KEY_BECOME: 70, // F
   KEY_CHAT: 13, // Enter
+  KEY_SLASH: 191, // Enter / chat
   KEY_FIREFOOD: 119, // F8
   KEY_SPLIT: 32, // Space
 
@@ -73,6 +74,7 @@ const global = {
   KEY_REVERSE_TANK: 86, // V
   KEY_REVERSE_MOUSE: 66, // B
   KEY_SPIN_LOCK: 88, // X
+  KEY_DEBUG_MODE: 90, // Z
 
   KEY_LEVEL_UP: 78, // N
   KEY_FUCK_YOU: 192, // `
@@ -158,5 +160,6 @@ const global = {
   mockupLoading: { then: (cb) => cb() },
   treeScale: 1,
   chats: {},
+  debugMode: false,
 };
 export { global };

@@ -1059,6 +1059,9 @@ const socketInit = (port) => {
       case "z": // name color
         global.nameColor = m[0];
         break;
+      case "P": // popup
+        alert(m[0]);
+        break;
       case "CHAT_MESSAGE_ENTITY":
         get.set(m);
         global.chats = {};

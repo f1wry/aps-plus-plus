@@ -1,0 +1,7 @@
+# REFERENCE
+
+---
+
+## Terminology:
+
+- `WP`: Whirlpool

@@ -317,15 +317,15 @@ It includes all features up to the latest release version.
 
 ## Fixes
 
-* `public/lib/gameDraw.js` is now actually used.
-* Turrets no longer shoot multiple times as fast than intended.
-* Entities with 0 body damage don't get assist credit when they happen to ram something as it dies.
-* Entities now die if they are dead but are touching a rock.
-* Gun.shootSettings no longer is tied to the gun's definition.
-* Bots spawn in their team's bases if there are bases.
-* Bots fire alt-fire barrels.
-* Bots can now use Trapper classes.
-* Dominator Game Mode.
-* Doesn't kick for invalid tokens, instead just does not give any perms.
-* Level Bar now shows max level if you have exactly enough score to reach that level.
-* Large `SHAPE`s now work.
+- `public/lib/gameDraw.js` is now actually used.
+- Turrets no longer shoot multiple times as fast than intended.
+- Entities with 0 body damage don't get assist credit when they happen to ram something as it dies.
+- Entities now die if they are dead but are touching a rock.
+- Gun.settings no longer is tied to the gun's definition.
+- Bots spawn in their team's bases if there are bases.
+- Bots fire alt-fire barrels.
+- Bots can now use Trapper classes.
+- Dominator Game Mode.
+- Doesn't kick for invalid tokens, instead just does not give any perms.
+- Level Bar now shows max level if you have exactly enough score to reach that level.
+- Large `SHAPE`s now work.

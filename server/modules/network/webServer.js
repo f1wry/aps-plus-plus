@@ -2,6 +2,7 @@ let fs = require("fs"),
   path = require("path"),
   publicRoot = path.join(__dirname, "../../../public"),
   sharedRoot = path.join(__dirname, "../../../shared"),
+  goofyRoot = path.join(__dirname, "../../../public/goofy"),
   mimeSet = {
     js: "application/javascript",
     json: "application/json",
@@ -58,8 +59,17 @@ server = require("http").createServer((req, res) => {
       case "/serverData.json":
         resStr = JSON.stringify({ ip: Config.host });
         break;
-      case "/test":
-        resStr = "Hello, World!"
+      case "/goofy":
+        let goofyFileToGet = path.join(goofyRoot, req.url);
+        if (!fs.existsSync(goofyFileToGet)) {
+          goofyFileToGet = path.join(goofyRoot, Config.DEFAULT_FILE);
+        } else if (!fs.lstatSync(goofyFileToGet).isFile()) {
+          goofyFileToGet = path.join(goofyRoot, Config.DEFAULT_FILE);
+        }
+        res.writeHead(200, {
+          "Content-Type": mimeSet[goofyFileToGet.split(".").pop()] || "text/html",
+        });
+        return fs.createReadStream(goofyFileToGet).pipe(res);
         break;
       default:
         let fileToGet = path.join(publicRoot, req.url);
